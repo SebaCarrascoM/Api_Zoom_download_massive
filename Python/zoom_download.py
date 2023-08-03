@@ -4,7 +4,7 @@ from urllib3.exceptions import IncompleteRead
 
 fecha_inicio = '2022-01-01'
 fecha_fin = '2022-12-31'
-TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6IlJ4V0FfUVFDUTFXOHNWazU2c2VuaFEiLCJleHAiOjE2ODkxNzQ4MzQsImlhdCI6MTY4ODU3MDAzNX0.QcTtBBJD5sWryiax8Omo3X40QwGBJUXOIFwc-gulRbk'
+TOKEN = 'YOU TOKEN'
 
 def obtener_lista_usuarios(token, pagina=1, limite=500000):
     url = 'https://api.zoom.us/v2/users'
@@ -93,7 +93,7 @@ def descargar_grabaciones(grabaciones_descargables, reuniones_usuarios):
                 nombre_archivo = f"{grab_id}_{grabado}_{archivo.get('file_size')}.mp4"
                 nombre_archivo = limpiar_nombre_archivo(nombre_archivo)
 
-                ruta_completa = os.path.join('C:/Users/sebastian.carrasco/Downloads/Zoom/', nombre_archivo)
+                ruta_completa = os.path.join('Directorio', nombre_archivo)
 
                 if not os.path.exists(ruta_completa):
                     try:
