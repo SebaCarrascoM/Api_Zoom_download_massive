@@ -2,9 +2,9 @@ import requests
 import os
 from urllib3.exceptions import IncompleteRead
 
-fecha_inicio = '2022-01-01'
-fecha_fin = '2022-12-31'
-TOKEN = 'YOU TOKEN'
+fecha_inicio = '2023-01-01'
+fecha_fin = '2023-12-31'
+TOKEN = '*'
 
 def obtener_lista_usuarios(token, pagina=1, limite=500000):
     url = 'https://api.zoom.us/v2/users'
@@ -55,10 +55,8 @@ def identificar_usuarios_en_misma_reunion(lista_usuarios, fecha_inicio, fecha_fi
     reuniones_usuarios = {}
 
     for usuario in lista_usuarios:
-        
         user_email = usuario.get('email')
-        reuniones_usuario = obtener_reuniones_usuario(fecha_inicio, fecha_fin,user_email)
-
+        reuniones_usuario = obtener_reuniones_usuario(user_email, fecha_inicio, fecha_fin, TOKEN)  
         for reunion in reuniones_usuario:
             reunion_id = reunion.get('id')
 
@@ -68,6 +66,7 @@ def identificar_usuarios_en_misma_reunion(lista_usuarios, fecha_inicio, fecha_fi
                 reuniones_usuarios[reunion_id] = [user_email]
 
     return reuniones_usuarios
+
 
 def limpiar_nombre_archivo(nombre):
     caracteres_no_validos = r'<>:"/\|?*'
@@ -93,7 +92,7 @@ def descargar_grabaciones(grabaciones_descargables, reuniones_usuarios):
                 nombre_archivo = f"{grab_id}_{grabado}_{archivo.get('file_size')}.mp4"
                 nombre_archivo = limpiar_nombre_archivo(nombre_archivo)
 
-                ruta_completa = os.path.join('Directorio', nombre_archivo)
+                ruta_completa = os.path.join('*', nombre_archivo)
 
                 if not os.path.exists(ruta_completa):
                     try:
@@ -112,7 +111,6 @@ def descargar_grabaciones(grabaciones_descargables, reuniones_usuarios):
                 else:
                     print(f"El archivo ya existe: {ruta_completa}")
 
-def descargar_grabacion(url_grabacion, nombre_archivo):
     if not os.path.exists(nombre_archivo):
         try:
             response = requests.get(url_grabacion)
@@ -131,13 +129,14 @@ lista_usuarios = obtener_lista_usuarios(TOKEN)
 reuniones_usuarios = identificar_usuarios_en_misma_reunion(lista_usuarios, fecha_inicio, fecha_fin)
 
 for usuario in lista_usuarios:
+
+    user_email = usuario.get('email')
+    grabaciones = obtener_reuniones_usuario(user_email, fecha_inicio, fecha_fin, user_email)  # Corrección aquí
     
-    user_email= usuario.get('email')
-    grabaciones = obtener_reuniones_usuario(user_email, fecha_inicio, fecha_fin)
     if grabaciones:
-        print({user_email})
+        print(user_email)  # Sin las llaves aquí
         print(f"Se encontraron grabaciones para el usuario con ID: {user_email}")
         descargar_grabaciones(grabaciones, reuniones_usuarios)
     else:
-        print({user_email})
+        print(user_email)  # Sin las llaves aquí
         print(f"No se encontraron grabaciones para el usuario con ID: {user_email}")
